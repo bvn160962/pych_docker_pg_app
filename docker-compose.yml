@@ -7,7 +7,7 @@ services:
     volumes:
       - ./service_app:/service
     environment:
-      - DB_HOST=database
+      - DB_HOST=ce-database
       - DB_NAME=postgres
       - DB_USER=postgres
       - DB_PASS=postgres
