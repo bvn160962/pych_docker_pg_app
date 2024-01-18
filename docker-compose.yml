@@ -1,0 +1,28 @@
+services:
+  ce-web-app:
+    build:
+      context: .
+    ports:
+        - "8000:8000"
+    volumes:
+      - ./service_app:/service
+    environment:
+      - DB_HOST=database
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASS=postgres
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - ce-database
+
+  ce-database:
+    image: postgres:14.6-alpine
+    ports:
+        - "54321:5432"
+    volumes:
+      - C:\DockerVolumes\DjangoProject\pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
