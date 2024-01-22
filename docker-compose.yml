@@ -26,3 +26,42 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+
+  redis:
+    image: redis:7.0.5-alpine
+    hostname: redis
+
+  worker:
+    build:
+      context: .
+    hostname: worker
+    entrypoint: celery
+    command: -A celery_app.app worker --loglevel=info
+    volumes:
+      - ./service_app:/service
+    links:
+      - redis
+    depends_on:
+      - redis
+      - ce-database
+    environment:
+      - DB_HOST=ce-database
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASS=postgres
+
+
+  flower:
+    build:
+      context: .
+    hostname: flower
+    entrypoint: celery
+    command: -A celery_app.app flower
+    volumes:
+      - ./service_app:/service
+    ports:
+        - "5555:5555"
+    links:
+      - redis
+    depends_on:
+      - redis
