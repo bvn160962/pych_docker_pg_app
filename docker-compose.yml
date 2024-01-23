@@ -50,6 +50,25 @@ services:
       - DB_USER=postgres
       - DB_PASS=postgres
 
+  worker2:
+    build:
+      context: .
+    hostname: worker2
+    entrypoint: celery
+    command: -A celery_app.app worker --loglevel=info
+    volumes:
+      - ./service_app:/service
+    links:
+      - redis
+    depends_on:
+      - redis
+      - ce-database
+    environment:
+      - DB_HOST=ce-database
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASS=postgres
+
 
   flower:
     build:
